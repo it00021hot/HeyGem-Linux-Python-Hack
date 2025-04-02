@@ -38,13 +38,7 @@ ENV CONDA_DEFAULT_ENV=/code/HeyGem-Linux-Python-Hack/envs
 ENV PATH /opt/conda/bin:/code/HeyGem-Linux-Python-Hack/envs/bin:$PATH
 
 # 安装依赖
-# 初始化 Conda
-RUN conda init bash
-
-# 激活 Conda 环境并安装依赖
-RUN bash -c "source ~/.bashrc && \
-             conda activate /code/HeyGem-Linux-Python-Hack/envs && \
-             pip install --no-cache-dir -r requirements.txt"
+RUN conda run -n /code/HeyGem-Linux-Python-Hack/envs pip install --no-cache-dir -r requirements.txt             
 
 # 下载模型
 RUN bash download.sh
