@@ -22,8 +22,8 @@ RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/downlo
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo "source /opt/conda/etc/profile.d/conda.sh" >> /opt/nvidia/entrypoint.d/100.conda.sh && \
     echo "source /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    echo "conda activate ${VENV}" >> /opt/nvidia/entrypoint.d/110.conda_default_env.sh && \
-    echo "conda activate ${VENV}" >> $HOME/.bashrc
+    echo "conda activate /code/HeyGem-Linux-Python-Hack/envs" >> /opt/nvidia/entrypoint.d/110.conda_default_env.sh && \
+    echo "conda activate /code/HeyGem-Linux-Python-Hack/envs" >> $HOME/.bashrc
 
 ENV PATH /opt/conda/bin:$PATH
 
@@ -34,7 +34,7 @@ RUN conda config --add channels conda-forge && \
 # ==================================================================
 
 RUN conda create -y --prefix /code/HeyGem-Linux-Python-Hack/envs python=3.8
-ENV CONDA_DEFAULT_ENV=${VENV}
+ENV CONDA_DEFAULT_ENV=/code/HeyGem-Linux-Python-Hack/envs
 ENV PATH /opt/conda/bin:/code/HeyGem-Linux-Python-Hack/envs/bin:$PATH
 
 # 安装依赖
