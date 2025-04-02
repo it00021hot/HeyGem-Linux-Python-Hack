@@ -37,7 +37,7 @@ RUN conda config --add channels conda-forge && \
 RUN conda create -p /code/HeyGem-Linux-Python-Hack/envs python=3.8 -y
 
 # 安装依赖
-RUN /code/HeyGem-Linux-Python-Hack/envs/bin/pip install --no-cache-dir -r requirements.txt
+RUN cd /code/HeyGem-Linux-Python-Hack && /code/HeyGem-Linux-Python-Hack/envs/bin/pip install --no-cache-dir -r requirements.txt
 
 # 下载模型
 RUN bash download.sh
