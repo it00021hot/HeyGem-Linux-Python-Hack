@@ -33,12 +33,13 @@ RUN conda config --add channels conda-forge && \
 # ~conda
 # ==================================================================
 
-RUN conda create -y --prefix /code/HeyGem-Linux-Python-Hack/envs python=3.8
-ENV CONDA_DEFAULT_ENV=/code/HeyGem-Linux-Python-Hack/envs
-ENV PATH /opt/conda/bin:/code/HeyGem-Linux-Python-Hack/envs/bin:$PATH
+# 创建 Conda 环境
+RUN conda create -p /code/HeyGem-Linux-Python-Hack/envs python=3.8 -y
 
 # 安装依赖
-RUN conda run -n /code/HeyGem-Linux-Python-Hack/envs pip install --no-cache-dir -r requirements.txt             
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate /code/HeyGem-Linux-Python-Hack/envs && \
+    pip install --no-cache-dir -r requirements.txt
 
 # 下载模型
 RUN bash download.sh
