@@ -16,23 +16,31 @@ RUN git clone https://github.com/it00021hot/HeyGem-Linux-Python-Hack.git && \
     cd HeyGem-Linux-Python-Hack
 
 # 安装miniconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda && \
-    rm Miniconda3-latest-Linux-x86_64.sh && \
-    /miniconda/bin/conda init && \
-    source /miniconda/bin/activate
+RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O ~/miniforge.sh && \
+    bash ~/miniforge.sh -b -p /opt/conda && \
+    rm ~/miniforge.sh && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo "source /opt/conda/etc/profile.d/conda.sh" >> /opt/nvidia/entrypoint.d/100.conda.sh && \
+    echo "source /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate ${VENV}" >> /opt/nvidia/entrypoint.d/110.conda_default_env.sh && \
+    echo "conda activate ${VENV}" >> $HOME/.bashrc
 
-ENV PATH="/miniconda/bin:$PATH"
+ENV PATH /opt/conda/bin:$PATH
 
-# 创建虚拟环境
-RUN /miniconda/bin/conda create --prefix /code/HeyGem-Linux-Python-Hack/envs python=3.8
+RUN conda config --add channels conda-forge && \
+    conda config --set channel_priority strict
+# ------------------------------------------------------------------
+# ~conda
+# ==================================================================
 
-# 激活虚拟环境/miniconda/envs/
-RUN /miniconda/bin/conda activate /code/HeyGem-Linux-Python-Hack/envs
+RUN conda create -y --prefix /code/HeyGem-Linux-Python-Hack/envs python=3.8
+ENV CONDA_DEFAULT_ENV=${VENV}
+ENV PATH /opt/conda/bin:/code/HeyGem-Linux-Python-Hack/envs/bin:$PATH
 
 # 安装依赖
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN conda activate /code/HeyGem-Linux-Python-Hack/envs && \
+    pip install --no-cache-dir -r requirements.txt
 
 # 下载模型
 RUN bash download.sh
@@ -46,7 +54,9 @@ WORKDIR /code
 # 安装系统依赖
 RUN apt-get update && apt-get install -y \
     libsndfile1 \
-    ffmpeg
+    ffmpeg && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/*
 
 # 复制构建阶段HeyGem-Linux-Python-Hack目录下的所有文件到code下
 COPY --from=BUILDER /code/HeyGem-Linux-Python-Hack/* /code
@@ -55,4 +65,4 @@ COPY --from=BUILDER /code/HeyGem-Linux-Python-Hack/* /code
 EXPOSE 8383
 
 # 启动服务
-CMD ["/code/envs/python", "api_local.py"]  
+CMD ["/code/envs/bin/python", "api_local.py"]  
