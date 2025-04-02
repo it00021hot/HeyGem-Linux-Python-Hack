@@ -45,7 +45,6 @@ WORKDIR /code
 
 # 安装系统依赖
 RUN apt-get update && apt-get install -y \
-    opencv-python-headless \
     libsndfile1 \
     ffmpeg
 
