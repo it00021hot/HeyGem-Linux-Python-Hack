@@ -12,8 +12,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates
 
 # 克隆项目
-RUN git clone https://github.com/it00021hot/HeyGem-Linux-Python-Hack.git && \
-    cd HeyGem-Linux-Python-Hack
+RUN git clone https://github.com/it00021hot/HeyGem-Linux-Python-Hack.git
 
 # 安装miniconda
 RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O ~/miniforge.sh && \
