@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04 AS BUILDER
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 AS BUILDER
 
 # 设置工作目录
 WORKDIR /code
@@ -39,7 +39,7 @@ RUN /code/envs/bin/pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.
 RUN bash download.sh
 
 
-FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04 AS RUNNER
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 AS RUNNER
 
 # 设置工作目录
 WORKDIR /code
