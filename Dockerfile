@@ -32,7 +32,7 @@ RUN conda config --add channels conda-forge && \
 RUN conda create -p /code/envs python=3.8 -y
 
 # 安装依赖
-RUN /code/envs/bin/pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118 && \
+RUN /code/envs/bin/pip install torch torchvisio torchaudio --index-url https://download.pytorch.org/whl/cu117 && \
     /code/envs/bin/pip install --no-cache-dir -r requirements.txt
 
 # 下载模型
