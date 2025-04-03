@@ -15,17 +15,13 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/it00021hot/HeyGem-Linux-Python-Hack.git
 
 # 安装miniconda
-RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O ~/miniforge.sh && \
-    bash ~/miniforge.sh -b -p /opt/conda && \
-    rm ~/miniforge.sh && \
-    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo "source /opt/conda/etc/profile.d/conda.sh" >> /opt/nvidia/entrypoint.d/100.conda.sh && \
-    echo "source /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    echo "conda activate /code/HeyGem-Linux-Python-Hack/envs" >> /opt/nvidia/entrypoint.d/110.conda_default_env.sh && \
-    echo "conda activate /code/HeyGem-Linux-Python-Hack/envs" >> $HOME/.bashrc
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm -rf /tmp/miniconda.sh
 
 ENV PATH /opt/conda/bin:$PATH
 
+RUN conda update -n base -c defaults conda -y
 RUN conda config --add channels conda-forge && \
     conda config --set channel_priority strict
 # ------------------------------------------------------------------
@@ -36,7 +32,9 @@ RUN conda config --add channels conda-forge && \
 RUN conda create -p /code/HeyGem-Linux-Python-Hack/envs python=3.8 -y
 
 # 安装依赖
-RUN cd /code/HeyGem-Linux-Python-Hack && /code/HeyGem-Linux-Python-Hack/envs/bin/pip install --no-cache-dir -r requirements.txt
+RUN cd /code/HeyGem-Linux-Python-Hack && \
+    /code/HeyGem-Linux-Python-Hack/envs/bin/pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118 && \
+    /code/HeyGem-Linux-Python-Hack/envs/bin/pip install --no-cache-dir -r requirements.txt
 
 # 下载模型
 RUN bash download.sh
@@ -50,6 +48,8 @@ WORKDIR /code
 # 安装系统依赖
 RUN apt-get update && apt-get install -y \
     libsndfile1 \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
     ffmpeg && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/*
