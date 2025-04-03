@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates
 
 # 克隆项目
-RUN git clone https://github.com/it00021hot/HeyGem-Linux-Python-Hack.git
+ADD . /code
 
 # 安装miniconda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
@@ -29,12 +29,11 @@ RUN conda config --add channels conda-forge && \
 # ==================================================================
 
 # 创建 Conda 环境
-RUN conda create -p /code/HeyGem-Linux-Python-Hack/envs python=3.8 -y
+RUN conda create -p /code/envs python=3.8 -y
 
 # 安装依赖
-RUN cd /code/HeyGem-Linux-Python-Hack && \
-    /code/HeyGem-Linux-Python-Hack/envs/bin/pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118 && \
-    /code/HeyGem-Linux-Python-Hack/envs/bin/pip install --no-cache-dir -r requirements.txt
+RUN /code/envs/bin/pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118 && \
+    /code/envs/bin/pip install --no-cache-dir -r requirements.txt
 
 # 下载模型
 RUN bash download.sh
@@ -55,7 +54,7 @@ RUN apt-get update && apt-get install -y \
     rm -r /var/lib/apt/lists/*
 
 # 复制构建阶段HeyGem-Linux-Python-Hack目录下的所有文件到code下
-COPY --from=BUILDER /code/HeyGem-Linux-Python-Hack/* /code
+COPY --from=BUILDER /code /code
 
 # 暴露端口
 EXPOSE 8383
