@@ -3,10 +3,8 @@
 ![Python](https://img.shields.io/badge/Python-3.8-blue.svg)
 ![Linux](https://img.shields.io/badge/OS-Linux-brightgreen.svg)
 
-**[中文](#chinese-version)** | **[English](README_en.md)**  
+**[中文](#chinese-version)** | **[English](README_en.md)**
 
----
-如果你需要较为完整的 HeyGem，即从 TTS 到数字人，那么你可以参考 [这里](README_tts_f2f.MD)
 ---
 
 <a name="chinese-version"></a>
@@ -30,43 +28,40 @@
 
 ## 开始使用
 
-### 安装
-本项目**支持且仅支持 Linux & python3.8 环境**  
-请确保你的 Linux 系统上已经安装了 **Python 3.8**。然后，使用 pip 安装项目依赖项  
-同时也提供一个备用的环境 [requirements_0.txt](requirements_0.txt)，遇到问题的话，你可以参考它来建立一个新的环境。  
-**具体的 onnxruntime-gpu / torch 等需要结合你的机器上的 cuda 版本去尝试一些组合，否则仍旧可能遇到问题。**  
-**请尽量不要询问任何关于 pip 的问题，感谢合作**
+### 环境
+本项目包括 tts 和 face2face 两部分
+* tts 部分支持 3.8，事实上有更高版本更好；
+* face2face 部分支持且仅支持 3.8。
 
-```bash
-# 直接安装整个 requirements.txt 不一定成功，更建议跑代码观察报错信息，然后根据报错信息结合 requirements 去尝试安装，祝你顺利。
-# pip install -r requirements.txt
-```
 
 ### 使用
 把项目克隆到本地
 ```bash
+# f2f
 git clone https://github.com/Holasyb918/HeyGem-Linux-Python-Hack
 cd HeyGem-Linux-Python-Hack
+# 下载 f2f 模型
 bash download.sh
+
+# tts
+git clone https://github.com/Holasyb918/tts-fish-speech
+cd tts-fish-speech
+# 下载 tts 模型
+huggingface-cli download fishaudio/fish-speech-1.5 --local-dir checkpoints/fish-speech-1.5/
 ```
+
+### 安装环境
+请参考 [requirements.txt](https://github.com/Holasyb918/tts-fish-speech/blob/main/requirements.txt) 并结合你的实际环境来搭建环境，如果单个环境难以满足，tts 可以使用常规的环境，不要求 3.8，但你可能需要分步完成从 text 到数字人的整个流程。
+
 #### 开始使用  
 * repo 中已提供可以用于 demo 的音视频样例，代码可以直接运行。  
+把你需要生成的文本放在 [example/text.txt](example/text.txt) 中，把要克隆的音色放在 [example/audio.wav](example/audio.wav) 中，然后运行以下命令：
 #### command:  
 ```bash
-python run.py 
+bash inference_from_text.sh example/audio.wav example/text.txt example/video.mp4
+#             音色 wav           TTS 文本            视频
 ```  
 
-* 如果要使用自己的数据，可以外部传入参数，请注意，**path 是本地文件，且仅支持相对路径**.  
-
-#### command:  
-```bash
-python run.py --audio_path example/audio.wav --video_path example/video.mp4
-```  
-#### gradio:  
-```bash
-python app.py
-# 请等待模型初始化完成后提交任务
-```
 
 ## QA
 ### 1. 多个人脸报错  
@@ -97,20 +92,6 @@ python check_env/check_onnx_cuda.py
 ```bash
 pip install typeguard
 ```
-  
-### 4. library.so 找不到  
-报错一般是类似于 Could not load library libcublasLt.so.11. Error: libcublasLt.so.11: cannot open shared object file: No such file or directory  
-
-执行以下命令查看是否有改文件  
-```
-sudo find /usr -name "libcublasLt.so.11"  
-```
-没有的话，应该需要安装对应版本的cuda  
-如果有的话就把第一步查看的文件路径添加到环境变量  
-```
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-```
-永久生效就添加到 ~/.bashrc 里面然后 source ~/.bashrc 一下  
 
 ## Contributing  
 欢迎贡献！
